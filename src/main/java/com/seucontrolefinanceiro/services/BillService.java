@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -183,41 +186,4 @@ public class BillService implements Service<Bill> {
         }
     }
 
-    public PanelHome getPanelHome(String userId) {
-        List<Bill> billsByUser = repository.findByUserId(userId);
-        Set<LocalDate> dates = billsByUser
-                .stream()
-                .map(Bill::getPayDAy)
-                .collect(Collectors.toSet());
-
-        List<Panel> panels = new ArrayList<>();
-
-        for (LocalDate date : dates) {
-            BigDecimal amount = getPanelAmount(billsByUser);
-            String title = getPanelTitle(date);
-            panels.add(
-                Panel.builder()
-                    .date(date)
-                    .amount(amount)
-                    .title(title)
-                    .build()
-            );
-        }
-
-        return PanelHome.builder()
-                .panels(panels)
-                .panelQuantity(dates.size())
-                .build();
-    }
-
-    private BigDecimal getPanelAmount(List<Bill> bills) {
-        return bills
-            .stream()
-            .map(Bill::getAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private String getPanelTitle(LocalDate date) {
-        return "Temporario";
-    }
 }

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Panel {
     private LocalDate date;
+    private Integer year;
     private BigDecimal amount;
     private String title;
 }

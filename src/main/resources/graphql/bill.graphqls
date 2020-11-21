@@ -4,6 +4,7 @@ extend type Query {
 
 type Panel {
     date:String,
+    year:Int
     amount:Float,
     title:String
 }
