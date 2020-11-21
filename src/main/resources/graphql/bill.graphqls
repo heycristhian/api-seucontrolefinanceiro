@@ -1,0 +1,14 @@
+extend type Query {
+    panelHome(userId:String!):PanelHome
+}
+
+type Panel {
+    date:String,
+    amount:Float,
+    title:String
+}
+
+type PanelHome {
+    panelQuantity:Int,
+    panels:[Panel]
+}
