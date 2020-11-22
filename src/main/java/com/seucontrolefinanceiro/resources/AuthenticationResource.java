@@ -4,6 +4,7 @@ import com.seucontrolefinanceiro.config.security.TokenService;
 import com.seucontrolefinanceiro.model.User;
 import com.seucontrolefinanceiro.dto.TokenDTO;
 import com.seucontrolefinanceiro.form.LoginForm;
+import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +37,7 @@ public class AuthenticationResource {
             User loggedUser = (User) authenticate.getPrincipal();
             return ResponseEntity.ok(new TokenDTO(token, "Bearer", loggedUser.getId()));
         } catch (AuthenticationException e) {
-            return ResponseEntity.badRequest().build();
+            throw new ObjectNotFoundException("Object not found");
         }
     }
 }
