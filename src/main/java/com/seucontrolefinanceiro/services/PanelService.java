@@ -24,6 +24,11 @@ public class PanelService {
 
     public PanelHome getPanelHome(String userId) {
         List<Bill> billsByUser = billRepository.findByUserId(userId);
+
+        if (billsByUser.size() == 0) {
+            return returnObjectEmpty();
+        }
+
         billsByUser = billsByUser
                 .stream()
                 .filter(bill -> !bill.isPaid())
@@ -52,12 +57,27 @@ public class PanelService {
         }
 
         panels.sort(Comparator.comparing(Panel::getDate));
-        Integer panelQuantity = getPanelQuantity(dates);
+        //Integer panelQuantity = getPanelQuantity(dates);
 
         return PanelHome.builder()
             .panels(panels)
-            .panelQuantity(panelQuantity)
+            .panelQuantity(panels.size())
             .build();
+    }
+
+    private PanelHome returnObjectEmpty() {
+        LocalDate currentDate = LocalDate.now();
+        Panel panel =  Panel.builder()
+                .amount(BigDecimal.ZERO)
+                .year(currentDate.getYear())
+                .date(currentDate)
+                .title(getPanelTitle(currentDate))
+                .build();
+
+        return PanelHome.builder()
+                .panels(Arrays.asList(panel))
+                .panelQuantity(1)
+                .build();
     }
 
     private BigDecimal getPanelAmount(List<Bill> bills, LocalDate date) {
