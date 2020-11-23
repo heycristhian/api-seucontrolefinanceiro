@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("scf-service/users")
+@RequestMapping("api/v1/users")
 public class UserResource implements Resource<UserDTO, UserForm> {
 
     @Autowired private UserService service;

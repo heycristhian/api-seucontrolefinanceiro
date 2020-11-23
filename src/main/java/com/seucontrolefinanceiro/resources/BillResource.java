@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("scf-service/bills")
+@RequestMapping("api/v1/bills")
 public class BillResource implements Resource<BillDTO, BillForm> {
 
     @Autowired
@@ -67,5 +67,11 @@ public class BillResource implements Resource<BillDTO, BillForm> {
         service.update(bill);
         URI uri = uriBuilder.path("scf-service/bills/{id}").buildAndExpand(bill.getId()).toUri();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/paid")
+    public ResponseEntity<List<Bill>> billsByUserId(@RequestParam String userId, @RequestParam boolean isPaid) {
+        List<Bill> bills = service.billsByUserId(userId, isPaid);
+        return ResponseEntity.ok(bills);
     }
 }

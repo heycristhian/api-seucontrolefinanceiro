@@ -2,23 +2,16 @@ package com.seucontrolefinanceiro.services;
 
 import com.seucontrolefinanceiro.model.Bill;
 import com.seucontrolefinanceiro.model.User;
-import com.seucontrolefinanceiro.model.domain.Panel;
-import com.seucontrolefinanceiro.model.domain.PanelHome;
 import com.seucontrolefinanceiro.repository.BillRepository;
 import com.seucontrolefinanceiro.repository.UserRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import com.seucontrolefinanceiro.services.util.GenerateObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
@@ -186,4 +179,13 @@ public class BillService implements Service<Bill> {
         }
     }
 
+    public List<Bill> billsByUserId(String userId, boolean isPaid) {
+        List<Bill> bills = repository.findByUserId(userId);
+        bills = bills.stream()
+                .filter(bill -> bill.isPaid() == isPaid)
+                .sorted(Comparator.comparing(Bill::getPayDAy))
+                .collect(Collectors.toList());
+        return bills;
+
+    }
 }

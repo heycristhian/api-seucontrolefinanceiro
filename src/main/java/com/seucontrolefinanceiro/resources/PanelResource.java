@@ -17,6 +17,6 @@ public class PanelResource {
 
     @GetMapping
     public PanelHome panelHome(@RequestParam String userId) {
-        return panelService.getPanelHome(userId);
+        return panelService.getPanel(userId);
     }
 }

@@ -22,7 +22,7 @@ public class PanelService {
 
     final Integer SUM_CURRENT_MONTH = 1;
 
-    public PanelHome getPanelHome(String userId) {
+    public PanelHome getPanel(String userId) {
         List<Bill> billsByUser = billRepository.findByUserId(userId);
 
         if (billsByUser.size() == 0) {
@@ -44,6 +44,12 @@ public class PanelService {
         List<Panel> panels = new ArrayList<>();
 
         for (LocalDate date : dates) {
+            Set<Bill> billsByDate = billsByUser
+                    .stream()
+                    .filter(bill -> bill.getPayDAy().getYear() == date.getYear()
+                            && bill.getPayDAy().getMonth() == date.getMonth())
+                    .collect(Collectors.toSet());
+
             BigDecimal amount = getPanelAmount(billsByUser, date);
             String title = getPanelTitle(date);
             panels.add(
@@ -52,6 +58,7 @@ public class PanelService {
                     .year(date.getYear())
                     .amount(amount)
                     .title(title)
+                    .bills(billsByDate)
                     .build()
             );
         }
