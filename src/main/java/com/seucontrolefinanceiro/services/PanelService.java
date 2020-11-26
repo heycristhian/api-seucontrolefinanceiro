@@ -22,7 +22,7 @@ public class PanelService {
 
     final Integer SUM_CURRENT_MONTH = 1;
 
-    public PanelHome getPanel(String userId) {
+    public PanelHome getPanelHome(String userId) {
         List<Bill> billsByUser = billRepository.findByUserId(userId);
 
         if (billsByUser.size() == 0) {
@@ -34,6 +34,10 @@ public class PanelService {
                 .filter(bill -> !bill.isPaid())
                 .collect(Collectors.toList());
 
+        billsByUser.stream()
+                .sorted(Comparator.comparing(Bill::getPayDAy))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
         Set<LocalDate> dates = billsByUser
                 .stream()
                 .map(Bill::getPayDAy)
@@ -41,35 +45,38 @@ public class PanelService {
                 .sorted(LocalDate::compareTo)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        List<Panel> panels = new ArrayList<>();
-
-        for (LocalDate date : dates) {
-            Set<Bill> billsByDate = billsByUser
-                    .stream()
-                    .filter(bill -> bill.getPayDAy().getYear() == date.getYear()
-                            && bill.getPayDAy().getMonth() == date.getMonth())
-                    .collect(Collectors.toSet());
-
-            BigDecimal amount = getPanelAmount(billsByUser, date);
-            String title = getPanelTitle(date);
-            panels.add(
-                Panel.builder()
-                    .date(date)
-                    .year(date.getYear())
-                    .amount(amount)
-                    .title(title)
-                    .bills(billsByDate)
-                    .build()
-            );
-        }
+        List<Panel> panels = handlePanels(dates, billsByUser);
 
         panels.sort(Comparator.comparing(Panel::getDate));
-        //Integer panelQuantity = getPanelQuantity(dates);
 
         return PanelHome.builder()
             .panels(panels)
             .panelQuantity(panels.size())
             .build();
+    }
+
+    private List<Panel> handlePanels(Set<LocalDate> dates, List<Bill> billsByUser) {
+        List<Panel> panels = new ArrayList<>();
+        for (LocalDate date : dates) {
+            Set<Bill> billsByDate = billsByUser
+                .stream()
+                .filter(bill -> bill.getPayDAy().getYear() == date.getYear()
+                        && bill.getPayDAy().getMonth() == date.getMonth())
+                .collect(Collectors.toSet());
+
+            BigDecimal amount = getPanelAmount(billsByUser, date);
+            String title = getPanelTitle(date);
+            panels.add(
+                Panel.builder()
+                        .date(date)
+                        .year(date.getYear())
+                        .amount(amount)
+                        .title(title)
+                        .bills(billsByDate)
+                        .build()
+            );
+        }
+        return panels;
     }
 
     private PanelHome returnObjectEmpty() {

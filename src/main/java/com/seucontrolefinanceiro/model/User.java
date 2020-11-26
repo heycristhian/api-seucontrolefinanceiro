@@ -39,7 +39,7 @@ public class User implements UserDetails {
     private List<Profile> profiles = new ArrayList<>();
 
     @DBRef(lazy = true)
-    @Builder.Default private List<Bill> bills;
+    @Builder.Default private List<Bill> bills = new ArrayList<>();
 
     @Deprecated
     User() {}

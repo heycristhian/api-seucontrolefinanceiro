@@ -64,7 +64,7 @@ public class BillService implements Service<Bill> {
             newBill.setParent((newBill.getParent() == null) ? newBill.getId() : newBill.getParent());
 
             if (newBillIsEveryMonth && !oldBillIsEveryMonth) {
-               createChildrenBill(newBill);
+                createChildrenBill(newBill);
             } else if (oldBillIsEveryMonth && !newBillIsEveryMonth) {
                 removeChildrenBill(newBill);
             } else if(newBill.isEveryMonth()){

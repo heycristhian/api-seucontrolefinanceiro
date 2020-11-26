@@ -7,7 +7,9 @@ import com.seucontrolefinanceiro.repository.BillRepository;
 import com.seucontrolefinanceiro.repository.PaymentCategoryRepository;
 import com.seucontrolefinanceiro.repository.UserRepository;
 import com.seucontrolefinanceiro.services.BillService;
+import com.seucontrolefinanceiro.services.hashUtil.HashService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +24,8 @@ public class Instantiation implements CommandLineRunner {
     @Autowired private BillService billService;
 
     @Autowired private BillRepository billRepository;
+
+    @Autowired private HashService hashService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -174,7 +178,7 @@ public class Instantiation implements CommandLineRunner {
                     .id("5edc8081336c5266fcc81dd5")
                     .fullName("Administrador")
                     .email("admin@admin.com.br")
-                    .password(new BCryptPasswordEncoder().encode("admin"))
+                    .password(hashService.generateHash("admin"))
                     .cpf("45073070828")
                     .build()
             );
@@ -183,12 +187,10 @@ public class Instantiation implements CommandLineRunner {
                 User.builder()
                     .fullName("Cristhian Dias")
                     .email("heycristhian@gmail.com")
-                    .password(new BCryptPasswordEncoder().encode("admin"))
+                    .password(hashService.generateHash("admin"))
                     .cpf("45073070828")
                     .build()
             );
         }
-
-
     }
 }

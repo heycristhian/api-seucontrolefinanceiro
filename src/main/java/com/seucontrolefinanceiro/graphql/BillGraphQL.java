@@ -13,6 +13,6 @@ public class BillGraphQL implements GraphQLQueryResolver, GraphQLMutationResolve
     @Autowired private PanelService panelService;
 
     public PanelHome panelHome(String userId) {
-        return panelService.getPanel(userId);
+        return panelService.getPanelHome(userId);
     }
 }

@@ -65,7 +65,7 @@ public class BillResource implements Resource<BillDTO, BillForm> {
         Bill bill = form.converter();
         bill.setPaymentCategory(paymentCategoryService.findByDescriptionContainingIgnoreCase(bill.getPaymentCategory().getDescription()).get(0));
         service.update(bill);
-        URI uri = uriBuilder.path("scf-service/bills/{id}").buildAndExpand(bill.getId()).toUri();
+        URI uri = uriBuilder.path("api/v1/bills/{id}").buildAndExpand(bill.getId()).toUri();
         return ResponseEntity.noContent().build();
     }
 

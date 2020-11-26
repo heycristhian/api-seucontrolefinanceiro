@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface Service<T> {
 
-    UserRepository repository = null;
-
     public List<T> findAll();
     public T findById(String id);
     public T save(T t);
