@@ -5,8 +5,8 @@ import com.seucontrolefinanceiro.repository.PaymentCategoryRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 public class PaymentCategoryService implements Service<PaymentCategory> {
@@ -55,5 +55,17 @@ public class PaymentCategoryService implements Service<PaymentCategory> {
 
     public List<PaymentCategory> findByDescriptionContainingIgnoreCase(String description) {
         return repository.findByDescriptionContainingIgnoreCase(description);
+    }
+
+    public Set<String> findAllByBillType(String billTypeString) {
+
+        Set<PaymentCategory> paymentCategory = repository.findAllByBillType(billTypeString.toUpperCase())
+                .stream().collect(Collectors.toSet());
+
+        return paymentCategory
+                .stream()
+                .map(PaymentCategory::getDescription)
+                .sorted(String::compareTo)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

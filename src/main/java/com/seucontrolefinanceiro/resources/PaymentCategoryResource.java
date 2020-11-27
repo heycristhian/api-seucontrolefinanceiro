@@ -1,5 +1,6 @@
 package com.seucontrolefinanceiro.resources;
 
+import com.seucontrolefinanceiro.model.BillType;
 import com.seucontrolefinanceiro.model.PaymentCategory;
 import com.seucontrolefinanceiro.dto.PaymentCategoryDTO;
 import com.seucontrolefinanceiro.dto.UserDTO;
@@ -13,9 +14,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("scf-service/payment-categories")
+@RequestMapping("api/v1/payment-categories")
 public class PaymentCategoryResource implements Resource<PaymentCategoryDTO, PaymentCategoryForm> {
 
     @Autowired
@@ -40,7 +43,7 @@ public class PaymentCategoryResource implements Resource<PaymentCategoryDTO, Pay
     public ResponseEntity<PaymentCategoryDTO> insert(@RequestBody @Validated PaymentCategoryForm form, UriComponentsBuilder uriBuilder) {
         PaymentCategory paymentCategory = form.converter();
         paymentCategory = service.save(paymentCategory);
-        URI uri = uriBuilder.path("scf-service/payment-categories/{id}").buildAndExpand(paymentCategory.getId()).toUri();
+        URI uri = uriBuilder.path("api/v1/payment-categories/{id}").buildAndExpand(paymentCategory.getId()).toUri();
         return ResponseEntity.created(uri).body(new PaymentCategoryDTO(paymentCategory));
     }
 
@@ -61,7 +64,13 @@ public class PaymentCategoryResource implements Resource<PaymentCategoryDTO, Pay
     public ResponseEntity<UserDTO> update(@RequestBody @Validated PaymentCategoryForm form, UriComponentsBuilder uriBuilder) {
         PaymentCategory paymentCategory = form.converter();
         paymentCategory = service.update(paymentCategory);
-        URI uri = uriBuilder.path("scf-service/payment-categories/{id}").buildAndExpand(paymentCategory.getId()).toUri();
+        URI uri = uriBuilder.path("api/v1/payment-categories/{id}").buildAndExpand(paymentCategory.getId()).toUri();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/descriptions")
+    public ResponseEntity<Set<String>> findAllByBillType(@RequestParam String billType) {
+        Set<String> descriptionCategories = service.findAllByBillType(billType);
+        return ResponseEntity.ok(descriptionCategories);
     }
 }

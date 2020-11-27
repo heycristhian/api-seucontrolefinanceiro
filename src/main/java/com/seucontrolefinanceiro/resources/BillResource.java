@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/bills")
@@ -44,7 +45,7 @@ public class BillResource implements Resource<BillDTO, BillForm> {
     public ResponseEntity<BillDTO> insert(@RequestBody @Validated BillForm form, UriComponentsBuilder uriBuilder) {
         Bill bill = form.converter();
         service.save(bill);
-        URI uri = uriBuilder.path("scf-service/bills/{id}").buildAndExpand(bill.getId()).toUri();
+        URI uri = uriBuilder.path("api/v1/bills/{id}").buildAndExpand(bill.getId()).toUri();
         return ResponseEntity.created(uri).body(new BillDTO(bill));
     }
 
@@ -74,4 +75,5 @@ public class BillResource implements Resource<BillDTO, BillForm> {
         List<Bill> bills = service.billsByUserId(userId, isPaid);
         return ResponseEntity.ok(bills);
     }
+
 }
